@@ -26,6 +26,17 @@ spec:
           volumeMounts:
             - mountPath: /etc/linkding/data
               name: linkding-volume
+          env:
+            - name: LD_SUPERUSER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: superuser
+                  key: data.user
+            - name: LD_SUPERUSER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: superuser
+                  key: data.password
       volumes:
         - name: linkding-volume
           persistentVolumeClaim:

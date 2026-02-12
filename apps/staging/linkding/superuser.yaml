@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: superuser
+    data:
+        name: ENC[AES256_GCM,data:Y8Wz1g==,iv:iBQFebHhiYY2P8lGFcx6RsY56D1l6z/lp7P0512oZ6c=,tag:WB3HU+0G1Siq5iBFHbuC2g==,type:str]
+        password: ENC[AES256_GCM,data:PfL62QnLaH9QpUZq6zmhcarvbLc=,iv:CB2EFqcIep2qdH25fG3/Jw3bsujcGv1NAU8H+YkEj04=,tag:xwxmJFH7+87i4RYGMGHqzQ==,type:str]
+sops:
+    age:
+        - recipient: age1jrp5h2mwujrjw0vqgvqeqah33s8mfuh93dqz2vrj3hhdtku5qcfq6gkg35
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA5SGd3TkdjSkFnbGdvM25L
+            ajVwQjNnRkZoMEZiTzE5SU00TWZJaDFnYmlFCjdSd2xJa2p4bDI3S3o4WGh0SUV6
+            UE0vWmhnNW1xNEQ4cVA3ZDRwbjFUSU0KLS0tIHpHaVpXZm12bzdjK2tLb2dicmc5
+            UGZ3VmZqZzFiUjV0c2ZOZ0hxWlJCeEkK+NB///K2Vsbq7vD95K56XFBCMbcEFDvD
+            aKkWZ4a9jAtrl2MPoyOCeKGDA8sFIYPhJ+JIykBw7MXH50jSXDixTA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-02-12T18:41:04Z"
+    mac: ENC[AES256_GCM,data:xU6hpX4dweYuRToD1eQ/mcjGr7pOdbeN+ny9v41R4PqXLia9OQ9IgqM3WTk5/g1tiAEffJ+wtmBtnEUp9eP2vwWHJp1QW1SAgfpi1Eea1+rLFphStF7MN2NypqMqBJFnOYad/AlHg2VsG4tZBXmdkDvC6psv6v9dWbTEBAt8lRI=,iv:Rbp3cRyEX+4md66dJJDWwBIjBdKXyxv/zdFv34Ug8Ww=,tag:5d9LT9qTcD0dbDNWgv8vug==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.11.0
