@@ -31,7 +31,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: superuser
-                  key: data.user
+                  key: data.name
             - name: LD_SUPERUSER_PASSWORD
               valueFrom:
                 secretKeyRef:
