@@ -28,7 +28,7 @@ spec:
               name: linkding-volume
           envFrom:
             - secretRef:
-              name: superuser
+                name: superuser
       volumes:
         - name: linkding-volume
           persistentVolumeClaim:
