@@ -1,10 +1,10 @@
 apiVersion: v1
-kind: Secret
-metadata:
-    name: superuser
 data:
     name: ENC[AES256_GCM,data:m7zkQA==,iv:Jff4SwQh+oKz6MMUW1d3jDUredpXdupdH9PH8jH6aac=,tag:AMI93PNONK98qlcH4wP2aw==,type:str]
     password: ENC[AES256_GCM,data:fZGneJQkNRPQkazai1qokm3nU84=,iv:TNI5tFzUu2KdBv94JLj9ItKUdCryE0gEIDlI4POgsOk=,tag:Kgwd5mTttqfxAJH5MI6a/g==,type:str]
+kind: Secret
+metadata:
+    name: superuser
 sops:
     age:
         - recipient: age1jrp5h2mwujrjw0vqgvqeqah33s8mfuh93dqz2vrj3hhdtku5qcfq6gkg35
