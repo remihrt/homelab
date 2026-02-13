@@ -28,3 +28,8 @@ spec:
   values:
     grafana:
       adminPassword: remi
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        hosts:
+          - grafana.remihillairet.com
