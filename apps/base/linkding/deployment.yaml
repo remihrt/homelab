@@ -31,12 +31,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: superuser
-                  key: data.name
+                  key: name
             - name: LD_SUPERUSER_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: superuser
-                  key: data.password
+                  key: password
       volumes:
         - name: linkding-volume
           persistentVolumeClaim:
