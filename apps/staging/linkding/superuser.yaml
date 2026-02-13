@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-    name: ENC[AES256_GCM,data:XifycWW1Mi0=,iv:Hc3kPTKH2zbT336XbRM6c4bZ09Y+R2T3GgvSJQptR9Y=,tag:mwBYxN3i2lCbVwL93eBssA==,type:str]
-    password: ENC[AES256_GCM,data:H5qI4khp+czqZ/GwwhYS9AcSPzJ9Ws2y4J1Wcw==,iv:L27HD1l10SDW+N6DPOL1X7/oE3xJTu5qUi/cgWeFYIA=,tag:i6OVCDX8OhNZNyiJTY460Q==,type:str]
+    LD_SUPERUSER_NAME: ENC[AES256_GCM,data:XifycWW1Mi0=,iv:Hc3kPTKH2zbT336XbRM6c4bZ09Y+R2T3GgvSJQptR9Y=,tag:mwBYxN3i2lCbVwL93eBssA==,type:str]
+    LD_SUPERUSER_PASSWORD: ENC[AES256_GCM,data:H5qI4khp+czqZ/GwwhYS9AcSPzJ9Ws2y4J1Wcw==,iv:L27HD1l10SDW+N6DPOL1X7/oE3xJTu5qUi/cgWeFYIA=,tag:i6OVCDX8OhNZNyiJTY460Q==,type:str]
 kind: Secret
 metadata:
     name: superuser
