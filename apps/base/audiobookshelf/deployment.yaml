@@ -23,7 +23,7 @@ spec:
         name: audiobookshelf
         ports:
           - containerPort: 3005
-				securityContext:
+        securityContext:
             allowPrivilegeEscalation: false
         envFrom:
           - configMapRef:
