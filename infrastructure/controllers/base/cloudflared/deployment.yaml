@@ -80,6 +80,9 @@ data:
     - hostname: linkding.remihillairet.com
       service: http://linkding.linkding:9090
     - hostname: abs.remihillairet.com
+      path: /audiobookshelf/socket.io
+      service: tcp://audiobookshelf.audiobookshelf:3005
+    - hostname: abs.remihillairet.com
       service: http://audiobookshelf.audiobookshelf:3005
 
     # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
