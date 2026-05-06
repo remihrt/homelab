@@ -1,157 +1,86 @@
-# 🏠 Homelab
+# Homelab
 
-> A production-grade Kubernetes homelab running on a heterogeneous Raspberry Pi + x86 cluster, managed with GitOps using Flux CD.
->
-> Built for hands-on, enterprise-grade learning — and as a living portfolio for the CKA certification path.
+GitOps-managed Kubernetes homelab using [Flux CD](https://fluxcd.io/) and [k3s](https://k3s.io/).
 
-![Kubernetes](https://img.shields.io/badge/Kubernetes-k3s-326CE5?logo=kubernetes&logoColor=white)
-![Flux](https://img.shields.io/badge/GitOps-Flux_CD-5468FF?logo=flux&logoColor=white)
-![Renovate](https://img.shields.io/badge/Dependencies-Renovate-1A1F6C?logo=renovatebot&logoColor=white)
-![SOPS](https://img.shields.io/badge/Secrets-SOPS-FF6B35)
-![License](https://img.shields.io/badge/License-MIT-green)
+## Projects
 
----
+### `media-server/`
 
-## 📖 Overview
+Single-node k3s cluster running self-hosted media services. Managed entirely through this repo — no direct `kubectl apply`.
 
-This repository contains the full GitOps configuration for my personal Kubernetes homelab. Every resource — from infrastructure components to self-hosted applications — is declared as code and continuously reconciled by Flux CD.
+**Hardware:** Mac Mini M1 (ARM, 8 GB RAM, 128 GB SSD) 
 
-The goals of this project are to:
+### `ha-cluster/`
 
-- Practice enterprise-grade Kubernetes patterns in a real, physical environment
-- Build a self-hosted platform for personal services with a focus on reliability and security
-- Develop the skills required to pass the **Certified Kubernetes Administrator (CKA)** certification
-- Serve as a concrete, inspectable portfolio for technical recruiters
+High-availability 3-node k3s cluster. Work in progress — currently 2 of 3 Raspberry Pi 5s available.
+
+**Hardware:** 3× Raspberry Pi 5 (ARM64, 4 GB RAM, 64 GB USB)
 
 ---
 
-## 🖥️ Hardware
-
-The cluster runs on a heterogeneous mix of ARM and x86 nodes, which adds real-world complexity around multi-architecture image compatibility.
-
-| Role          | Host                          | Architecture | CPU        | RAM   |
-|---------------|-------------------------------|--------------|------------|-------|
-| Control Plane | Raspberry Pi 5                | ARM64        | Cortex-A76 | 4 GB  |
-| Worker        | Raspberry Pi 5                | ARM64        | Cortex-A76 | 4 GB  |
-| Worker        | MacBook Pro (Arch Linux)      | x86_64       | Intel Core | 16 GB |
-
----
-
-## ⚙️ Tech Stack
-
-| Layer              | Tool                  | Purpose                                        |
-|--------------------|-----------------------|------------------------------------------------|
-| Kubernetes         | k3s                   | Lightweight, production-ready K8s distribution |
-| GitOps             | Flux CD               | Continuous reconciliation from Git             |
-| Ingress            | Traefik               | Reverse proxy and TLS termination              |
-| Observability      | Prometheus + Grafana  | Metrics collection and dashboarding            |
-| Secrets            | SOPS                  | Encrypted secrets committed safely to Git      |
-| Dependency updates | Renovate              | Automated image and chart version bumping      |
-| Tunnel             | Cloudflared           | Secure external access via Cloudflare Tunnel   |
-
----
-
-## 📁 Repository Structure
+## Repository structure
 
 ```
 homelab/
-├── apps/                    # Self-hosted applications
-├── clusters/
-│   └── staging/             # Cluster entrypoint — tells Flux what to reconcile
-├── flux-system/             # Flux controllers, generated during bootstrap
-├── infrastructure/          # Platform-level services (Renovate, Cloudflared)
-├── monitoring/              # Observability stack (Prometheus, Grafana)
-├── renovate.json            # Renovate bot configuration
-└── .gitignore
+├── media-server/
+│   └── cluster/staging/       # Flux entrypoint
+└── ha-cluster/
+    ├── cluster/staging/       # Flux entrypoint
+    └── apps/
+        ├── base/linkding/
+        └── staging/linkding/
 ```
 
-### Why this structure?
+Each project is self-contained. Within a project, manifests follow a `base/` + environment overlay pattern (e.g. `staging/`).
 
-The `clusters/staging/` directory is the **entrypoint**: it contains Flux `Kustomization` objects that point to every other directory. Flux reads this entrypoint first, then fans out to reconcile `apps/`, `infrastructure/`, and `monitoring/` independently. This separation of concerns mirrors patterns used in production GitOps platforms.
+## Stack
 
----
+| Layer       | Tool                  |
+|-------------|-----------------------|
+| Kubernetes  | k3s                   |
+| GitOps      | Flux CD               |
+| Secrets     | SOPS + age            |
+| Updates     | Renovate              |
+| Tunnel      | Cloudflare Tunnel     |
+| Observability | Prometheus + Grafana |
 
-## 🔄 GitOps Workflow
-
-All changes to the cluster flow exclusively through Git. Direct `kubectl apply` commands are intentionally avoided.
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        GitOps Flow                          │
-│                                                             │
-│  git push ──► GitHub ──► Source Controller (every ~1 min)  │
-│                                │                            │
-│                         Fetches repo &                      │
-│                         produces artifact                   │
-│                                │                            │
-│                         Kustomize Controller                │
-│                                │                            │
-│                    Applies desired state to cluster         │
-│                                │                            │
-│              Continuous drift remediation (auto-revert)     │
-└─────────────────────────────────────────────────────────────┘
-```
-
-1. A commit is pushed to the `main` branch on GitHub.
-2. **Source Controller** fetches the repository on a regular interval and produces a local artifact when a change is detected.
-3. **Kustomize Controller** reads the artifact, computes the desired state, and applies it to the cluster.
-4. If manual changes are made directly to the cluster (drift), Kustomize Controller automatically remediates them by re-applying the Git state.
-
-> To trigger an immediate reconciliation without waiting for the next interval:
-> ```bash
-> flux reconcile source git flux-system
-> ```
-
----
-
-## 🔐 Secrets Management
-
-Secrets are encrypted at rest using **SOPS** and committed directly to this repository. They are never stored in plaintext.
-
-The decryption key is managed separately and configured on the cluster, allowing Flux to decrypt secrets automatically during reconciliation. This pattern is safe for public repositories.
-
----
-
-## 🚀 Bootstrap
-
-> ⚠️ Prerequisites: `kubectl`, `flux` CLI, and a SOPS key configured locally.
+## Bootstrap
 
 ```bash
-# 1. Install k3s on the control plane node
+# Install k3s
 curl -sfL https://get.k3s.io | sh -
 
-# 2. Bootstrap Flux on the cluster, pointing to this repository
+# Bootstrap Flux (adjust path for the target project)
 flux bootstrap github \
   --owner=remihrt \
   --repository=homelab \
   --branch=main \
-  --path=clusters/staging \
+  --path=media-server/cluster/staging \
   --personal
 
-# 3. Apply SOPS decryption secret
+# Apply the SOPS decryption key
 kubectl create secret generic sops-age \
   --namespace=flux-system \
   --from-file=age.agekey=/path/to/your/key
 ```
 
-After bootstrap, Flux will automatically reconcile the full stack.
+## Secrets
 
----
+Secrets are encrypted with [SOPS](https://github.com/mozilla/sops) (age) before being committed. Only the `data` / `stringData` fields are encrypted. The age public key for each project is in `<project>/cluster/<env>/.sops.yaml`.
 
-## 🗺️ Roadmap
+```bash
+sops --encrypt --in-place path/to/secret.yaml
+```
 
-- [ ] Add multi-node high availability for the control plane
-- [ ] Implement network policies for inter-namespace traffic control
-- [ ] Add automated alerting via Alertmanager
-- [ ] Pass the CKA certification 🎯
+## Development
 
----
+Tools are managed via [mise](https://mise.jdx.dev/): `kubectl`, `flux2`, `k9s`. A devcontainer is provided at `.devcontainer/`.
 
-## 🙏 Acknowledgements
+```bash
+# Force immediate Flux reconciliation
+flux reconcile source git flux-system
 
-Inspired by the incredible homelab and GitOps community. Key references:
-
-- [Flux CD Documentation](https://fluxcd.io/docs/)
-- [k3s Documentation](https://docs.k3s.io/)
-- [awesome-home-kubernetes](https://github.com/k8s-at-home/awesome-home-kubernetes)
-- [SOPS by Mozilla](https://github.com/mozilla/sops)
+# Check status
+flux get kustomizations
+flux get helmreleases -A
+```
