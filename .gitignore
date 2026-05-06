@@ -42,3 +42,6 @@ terraform.rc
 # Ignore SSH known hosts (auto-populated, not secrets)
 .ssh/known_hosts
 .ssh/known_hosts.old
+
+# Ignore SOPS age.key
+age.key

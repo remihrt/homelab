@@ -61,6 +61,24 @@ Secrets are encrypted with [SOPS + age](https://github.com/mozilla/sops) and com
 
 The private age key must exist on the cluster as a Secret named `sops-age` in `flux-system` — Flux uses it to decrypt during reconciliation.
 
+### First-time SOPS setup for a new cluster
+
+```bash
+# 1. Generate a new age key pair (keep age.key private — never commit it)
+age-keygen -o age.key
+# Output: Public key: age1...
+
+# 2. Store the private key on the cluster
+kubectl create secret generic sops-age \
+  --namespace=flux-system \
+  --from-file=age.agekey=age.key
+
+# 3. Copy the public key into the cluster's .sops.yaml, then commit
+#    e.g. media-server/cluster/staging/.sops.yaml
+```
+
+Back up `age.key` securely (password manager, etc.) — losing it means losing access to all encrypted secrets.
+
 ```bash
 # Encrypt a secret before committing
 sops --encrypt --in-place path/to/secret.yaml
