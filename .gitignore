@@ -35,3 +35,10 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore Kube config
+.kube/
+
+# Ignore SSH known hosts (auto-populated, not secrets)
+.ssh/known_hosts
+.ssh/known_hosts.old
