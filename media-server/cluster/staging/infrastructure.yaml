@@ -1,18 +1,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: apps
+  name: infrastructure
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: infrastructure
   interval: 1m0s
   retryInterval: 1m
   timeout: 5m
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./media-server/apps/staging
+  path: ./media-server/infrastructure/staging
   prune: true
   decryption:
     provider: sops
